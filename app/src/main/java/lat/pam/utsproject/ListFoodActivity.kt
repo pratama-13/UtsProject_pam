@@ -1,5 +1,6 @@
 package lat.pam.utsproject
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,21 +19,25 @@ class ListFoodActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_list_food)
 
-
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Menyiapkan data makanan
+        // Data makanan
         foodList = listOf(
             Food("Batagor", "Batagor asli enak dari Bandung", R.drawable.batagor),
             Food("Black Salad", "Salad segar yang dibuat secara langsung", R.drawable.black_salad),
-            Food("Cappucino", "Kopi cappucino asli yang dibuat dari Kopi Arabica", R.drawable.cappuchino)
+            Food("Cappuccino", "Kopi cappuccino asli yang dibuat dari Kopi Arabica", R.drawable.cappuchino)
         )
 
-        adapter = FoodAdapter(foodList)
+        // Menginisialisasi adapter dengan listener klik
+        adapter = FoodAdapter(foodList) { selectedFood ->
+            val intent = Intent(this, OrderActivity::class.java)
+            intent.putExtra("FOOD_NAME", selectedFood.name)  // Kirim data nama makanan
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
 
-
+        // Mengatur padding agar sesuai dengan insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
